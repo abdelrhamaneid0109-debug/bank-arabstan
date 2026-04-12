@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, Collection } = require("discord.js");
+const { Client, GatewayIntentBits, Collection, MessageFlags } = require("discord.js");
 const fs = require("fs");
 const { Pool } = require("pg");
 const path = require("path");
@@ -45,7 +45,7 @@ for (const file of commandFiles) {
   client.commands.set(command.data.name, command);
 }
 
-client.once("clientReady", async () => {
+client.once("ready", async () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 
   const commands = client.commands.map(cmd => cmd.data);
@@ -62,10 +62,15 @@ client.on("interactionCreate", async (interaction) => {
     await command.execute(interaction);
   } catch (err) {
     console.error(err);
-    interaction.reply({ content: "❌ حصل خطأ", ephemeral: true });
+    interaction.reply({ content: "❌ حصل خطأ", flags: MessageFlags.Ephemeral });
   }
 });
 
-runMigrations().then(() => {
-  client.login(process.env.TOKEN);
-});
+runMigrations()
+  .then(() => {
+    client.login(process.env.TOKEN);
+  })
+  .catch((err) => {
+    console.error("❌ Fatal: could not run migrations, aborting startup.", err);
+    process.exit(1);
+  });

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits, MessageFlags } = require("discord.js");
 const { createUser, getUser, updateUser } = require("../database/db");
 
 module.exports = {
@@ -28,13 +28,13 @@ module.exports = {
     const amount = interaction.options.getInteger("المبلغ");
 
     if (amount <= 0)
-      return interaction.reply({ content: "❌ رقم غلط", ephemeral: true });
+      return interaction.reply({ content: "❌ رقم غلط", flags: MessageFlags.Ephemeral });
 
     await createUser(target.id);
     let user = await getUser(target.id);
 
     if (user[type] < amount) {
-      return interaction.reply({ content: "❌ معندوش فلوس كفاية", ephemeral: true });
+      return interaction.reply({ content: "❌ معندوش فلوس كفاية", flags: MessageFlags.Ephemeral });
     }
 
     user[type] -= amount;

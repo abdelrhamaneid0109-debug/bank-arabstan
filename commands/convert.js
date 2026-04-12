@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, MessageFlags } = require("discord.js");
 const { getUser, updateUser, createUser } = require("../database/db");
 
 module.exports = {
@@ -29,9 +29,9 @@ module.exports = {
     }
 
     if (!converted)
-      return interaction.reply({ content: "❌ معندكش كفاية", ephemeral: true });
+      return interaction.reply({ content: "❌ معندكش كفاية", flags: MessageFlags.Ephemeral });
 
-    updateUser(id, user);
+    await updateUser(id, user);
 
     interaction.reply("💱 تم التحويل");
   },
