@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require("discord.js");
 const { createUser, getUser } = require("../database/db");
 
 module.exports = {
@@ -30,7 +30,7 @@ module.exports = {
 
     return interaction.reply({
       embeds: [embed],
-      ephemeral: true // 🔒 سري
+      flags: MessageFlags.Ephemeral // 🔒 سري
     });
   },
 };

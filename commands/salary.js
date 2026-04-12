@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, MessageFlags } = require("discord.js");
 const { createUser, getUser, updateUser } = require("../database/db");
 
 const cooldownTime = 60 * 60 * 1000; // ساعة
@@ -22,7 +22,7 @@ module.exports = {
       const minutes = Math.ceil(remaining / 60000);
       return interaction.reply({
         content: `⏳ استنى **${minutes} دقيقة** الأول`,
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       });
     }
 
