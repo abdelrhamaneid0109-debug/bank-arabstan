@@ -1,5 +1,35 @@
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const fs = require("fs");
+const { Pool } = require("pg");
+const path = require("path");
+
+// ---------------------------------------------------------------------------
+// Run database migrations before the bot starts.
+// To run migrations manually: npm run migrate
+// ---------------------------------------------------------------------------
+async function runMigrations() {
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  try {
+    const migrationsDir = path.join(__dirname, "database", "migrations");
+    const migrationFiles = fs
+      .readdirSync(migrationsDir)
+      .filter((f) => f.endsWith(".sql"))
+      .sort();
+
+    for (const file of migrationFiles) {
+      const sql = fs.readFileSync(path.join(migrationsDir, file), "utf8");
+      console.log(`▶ Running migration: ${file}`);
+      await pool.query(sql);
+      console.log(`✅ Migration complete: ${file}`);
+    }
+    console.log("✅ All migrations applied.");
+  } catch (err) {
+    console.error("❌ Migration failed:", err);
+    process.exit(1);
+  } finally {
+    await pool.end();
+  }
+}
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
@@ -36,4 +66,6 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-client.login(process.env.TOKEN);
+runMigrations().then(() => {
+  client.login(process.env.TOKEN);
+});
