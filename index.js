@@ -54,17 +54,21 @@ for (const file of commandFiles) {
 // ---------------------------------------------------------------------------
 // عند تشغيل البوت
 // ---------------------------------------------------------------------------
-client.once("ready", async () => {  //
+client.once("clientReady", async () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 
   const commands = client.commands.map(cmd => cmd.data);
 
-  // 🔥 حط هنا ID السيرفر بتاعك
   const GUILD_ID = "1490837785786056787";
 
   try {
+    // 🧹 مسح الأوامر القديمة (تشغلها مرة واحدة بس)
+    await client.application.commands.set([]);
+
+    // ✅ تسجيل أوامر السيرفر
     await client.guilds.cache.get(GUILD_ID).commands.set(commands);
-    console.log("✅ Commands registered in guild (instant)");
+
+    console.log("✅ Commands cleaned & registered");
   } catch (err) {
     console.error("❌ Failed to register commands:", err);
   }
