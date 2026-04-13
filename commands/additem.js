@@ -46,7 +46,10 @@ module.exports = {
     );
 
     if (!hasRole) {
-      return interaction.reply({ content: "❌ للتجار فقط", ephemeral: true });
+      return interaction.reply({
+        content: "❌ للتجار فقط",
+        ephemeral: true
+      });
     }
 
     // 📍 تحقق من القناة
@@ -63,7 +66,14 @@ module.exports = {
     const price = interaction.options.getInteger("price");
     const currency = interaction.options.getString("currency");
 
-    // 💾 تخزين المنتج + التاجر
+    if (price <= 0) {
+      return interaction.reply({
+        content: "❌ السعر لازم يكون أكبر من 0",
+        ephemeral: true
+      });
+    }
+
+    // 1️⃣ إنشاء المنتج
     const result = await pool.query(
       `INSERT INTO products (name, price, currency, category, seller_id)
        VALUES ($1, $2, $3, $4, $5)
@@ -73,8 +83,8 @@ module.exports = {
 
     const productId = result.rows[0].id;
 
-    // 🛒 عرض المنتج
-    await interaction.reply(`
+    // 2️⃣ إرسال رسالة المنتج في نفس القناة
+    const msg = await interaction.channel.send(`
 🛒 **منتج جديد**
 
 📦 ${name}
@@ -86,5 +96,19 @@ module.exports = {
 🧾 للشراء:
 /buy product_id:${productId}
 `);
+
+    // 3️⃣ حفظ message_id + channel_id
+    await pool.query(
+      `UPDATE products
+       SET message_id = $1, channel_id = $2
+       WHERE id = $3`,
+      [msg.id, msg.channel.id, productId]
+    );
+
+    // 4️⃣ رد خاص للتاجر
+    await interaction.reply({
+      content: "✅ تم إضافة المنتج بنجاح",
+      ephemeral: true
+    });
   },
 };
