@@ -46,7 +46,16 @@ module.exports = {
       `UPDATE invoices SET status = 'cancelled' WHERE id = $1`,
       [id]
     );
-
+// ✅ تسجيل اللوج
+await pool.query(
+  `INSERT INTO logs (user_id, action, details)
+   VALUES ($1, $2, $3)`,
+  [
+    user.id,
+    "cancel",
+    `ألغى فاتورة ${invoice.item_name} بـ ${invoice.price} ${invoice.currency}`
+  ]
+);
     await interaction.reply(`
 ❌ تم إلغاء الفاتورة
 
