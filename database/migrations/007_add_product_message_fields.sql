@@ -1,3 +1,3 @@
 ALTER TABLE products
-ADD COLUMN message_id TEXT,
-ADD COLUMN channel_id TEXT;
+ADD COLUMN IF NOT EXISTS message_id TEXT,
+ADD COLUMN IF NOT EXISTS channel_id TEXT;
