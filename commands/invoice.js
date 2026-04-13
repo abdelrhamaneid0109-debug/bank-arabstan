@@ -33,9 +33,9 @@ module.exports = {
 
     // ✅ هنا الصح
     const allowedRoles = [
-      "ROLE_ID_1",
-      "ROLE_ID_2",
-      "ROLE_ID_3"
+      "1491565646687895563",
+      "1491565491070963733",
+      "1491578362743750776"
     ];
 
     const hasRole = interaction.member.roles.cache.some(role =>
