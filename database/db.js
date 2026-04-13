@@ -3,21 +3,6 @@ const { Pool } = require("pg");
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
-async function initDatabase() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS invoices (
-      id SERIAL PRIMARY KEY,
-      seller_id TEXT,
-      buyer_id TEXT,
-      item_name TEXT,
-      price INT,
-      currency TEXT,
-      status TEXT DEFAULT 'pending'
-    )
-  `);
-
-  console.log("✅ invoices table ready");
-}
 
 function createUser(id) {
   return pool.query(
