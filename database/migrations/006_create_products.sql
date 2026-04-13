@@ -3,5 +3,6 @@ CREATE TABLE IF NOT EXISTS products (
   name TEXT NOT NULL,
   price INT NOT NULL,
   currency TEXT NOT NULL,
-  category TEXT NOT NULL
+  category TEXT NOT NULL,
+  seller_id TEXT NOT NULL
 );

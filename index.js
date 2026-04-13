@@ -54,7 +54,7 @@ for (const file of commandFiles) {
 // ---------------------------------------------------------------------------
 // عند تشغيل البوت
 // ---------------------------------------------------------------------------
-client.once("clientReady", async () => {
+client.once("ready", async () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 
   const commands = client.commands.map(cmd => cmd.data);
