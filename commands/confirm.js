@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
 const { Pool } = require("pg");
-const { getUser, updateUser, createUser } = require("../db/db");
+const { getUser, updateUser, createUser } = require("../db/db.js");
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
