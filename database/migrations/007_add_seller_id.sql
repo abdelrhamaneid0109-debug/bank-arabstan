@@ -1,0 +1,2 @@
+ALTER TABLE products
+ADD COLUMN seller_id VARCHAR(32);
