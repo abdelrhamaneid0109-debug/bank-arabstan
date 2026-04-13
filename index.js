@@ -54,13 +54,13 @@ for (const file of commandFiles) {
 // ---------------------------------------------------------------------------
 // عند تشغيل البوت
 // ---------------------------------------------------------------------------
-client.once("clientReady", async () => {
+client.once("ready", async () => {  //
   console.log(`✅ Logged in as ${client.user.tag}`);
 
   const commands = client.commands.map(cmd => cmd.data);
 
   // 🔥 حط هنا ID السيرفر بتاعك
-  const GUILD_ID = "PUT_YOUR_SERVER_ID_HERE";
+  const GUILD_ID = "1490837785786056787";
 
   try {
     await client.guilds.cache.get(GUILD_ID).commands.set(commands);
