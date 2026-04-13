@@ -1,0 +1,47 @@
+const { SlashCommandBuilder } = require("discord.js");
+const { Pool } = require("pg");
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
+module.exports = {
+  data: new SlashCommandBuilder()
+    .setName("deleteitem")
+    .setDescription("حذف منتج")
+    .addIntegerOption(o =>
+      o.setName("id").setDescription("ID المنتج").setRequired(true)
+    ),
+
+  async execute(interaction) {
+    const id = interaction.options.getInteger("id");
+
+    const res = await pool.query(`SELECT * FROM products WHERE id=$1`, [id]);
+    const product = res.rows[0];
+
+    if (!product) {
+      return interaction.reply({ content: "❌ المنتج مش موجود", ephemeral: true });
+    }
+
+    if (product.seller_id !== interaction.user.id) {
+      return interaction.reply({ content: "❌ مش مسموح", ephemeral: true });
+    }
+
+    // 🗑️ حذف الرسالة
+    try {
+      const channel = await interaction.client.channels.fetch(product.channel_id);
+      const msg = await channel.messages.fetch(product.message_id);
+      await msg.delete();
+    } catch (err) {
+      console.log("⚠️ مقدرش امسح الرسالة");
+    }
+
+    // 🗑️ حذف من DB
+    await pool.query(`DELETE FROM products WHERE id=$1`, [id]);
+
+    await interaction.reply({
+      content: "🗑️ تم حذف المنتج",
+      ephemeral: true
+    });
+  },
+};
