@@ -71,7 +71,16 @@ module.exports = {
     );
 
     const id = result.rows[0].id;
-
+// ✅ تسجيل اللوج
+await pool.query(
+  `INSERT INTO logs (user_id, action, details)
+   VALUES ($1, $2, $3)`,
+  [
+    seller.id,
+    "invoice",
+    `أنشأ فاتورة ${item} بـ ${price} ${currency}`
+  ]
+);
     await interaction.reply(`
 🧾 فاتورة جديدة
 
