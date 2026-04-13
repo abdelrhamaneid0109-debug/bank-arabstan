@@ -5,7 +5,6 @@ const path = require("path");
 
 // ---------------------------------------------------------------------------
 // Run database migrations before the bot starts.
-// To run migrations manually: npm run migrate
 // ---------------------------------------------------------------------------
 async function runMigrations() {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
@@ -22,6 +21,7 @@ async function runMigrations() {
       await pool.query(sql);
       console.log(`✅ Migration complete: ${file}`);
     }
+
     console.log("✅ All migrations applied.");
   } catch (err) {
     console.error("❌ Migration failed:", err);
@@ -31,6 +31,9 @@ async function runMigrations() {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Discord Bot Setup
+// ---------------------------------------------------------------------------
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 });
@@ -38,20 +41,38 @@ const client = new Client({
 client.commands = new Collection();
 
 // تحميل الأوامر
-const commandFiles = fs.readdirSync("./commands");
+const commandFiles = fs.readdirSync("./commands").filter(f => f.endsWith(".js"));
 
 for (const file of commandFiles) {
   const command = require(`./commands/${file}`);
-  client.commands.set(command.data.name, command);
+  if (command.data && command.execute) {
+    client.commands.set(command.data.name, command);
+    console.log(`✅ Loaded command: ${command.data.name}`);
+  }
 }
 
-client.once("ready", async () => {
+// ---------------------------------------------------------------------------
+// عند تشغيل البوت
+// ---------------------------------------------------------------------------
+client.once("clientReady", async () => {
   console.log(`✅ Logged in as ${client.user.tag}`);
 
   const commands = client.commands.map(cmd => cmd.data);
-  await client.application.commands.set(commands);
+
+  // 🔥 حط هنا ID السيرفر بتاعك
+  const GUILD_ID = "PUT_YOUR_SERVER_ID_HERE";
+
+  try {
+    await client.guilds.cache.get(GUILD_ID).commands.set(commands);
+    console.log("✅ Commands registered in guild (instant)");
+  } catch (err) {
+    console.error("❌ Failed to register commands:", err);
+  }
 });
 
+// ---------------------------------------------------------------------------
+// استقبال الأوامر
+// ---------------------------------------------------------------------------
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
 
@@ -62,15 +83,21 @@ client.on("interactionCreate", async (interaction) => {
     await command.execute(interaction);
   } catch (err) {
     console.error(err);
-    interaction.reply({ content: "❌ حصل خطأ", flags: MessageFlags.Ephemeral });
+    interaction.reply({
+      content: "❌ حصل خطأ",
+      flags: MessageFlags.Ephemeral
+    });
   }
 });
 
+// ---------------------------------------------------------------------------
+// تشغيل البوت
+// ---------------------------------------------------------------------------
 runMigrations()
   .then(() => {
     client.login(process.env.TOKEN);
   })
   .catch((err) => {
-    console.error("❌ Fatal: could not run migrations, aborting startup.", err);
+    console.error("❌ Fatal error:", err);
     process.exit(1);
   });
