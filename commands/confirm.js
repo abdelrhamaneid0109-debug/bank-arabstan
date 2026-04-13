@@ -18,7 +18,6 @@ module.exports = {
     const user = interaction.user;
     const id = interaction.options.getInteger("id");
 
-    // هات الفاتورة
     const res = await pool.query(
       `SELECT * FROM invoices WHERE id = $1`,
       [id]
@@ -38,7 +37,6 @@ module.exports = {
       return interaction.reply({ content: "❌ مش مسموح لك تأكد الفاتورة دي", ephemeral: true });
     }
 
-    // تأكد إن المستخدمين موجودين
     await createUser(invoice.buyer_id);
     await createUser(invoice.seller_id);
 
@@ -48,7 +46,6 @@ module.exports = {
     const currency = invoice.currency;
     const price = invoice.price;
 
-    // تحقق من الفلوس
     if (buyer[currency] < price) {
       return interaction.reply({ content: "❌ معندكش فلوس كفاية", ephemeral: true });
     }
@@ -59,7 +56,6 @@ module.exports = {
     // إضافة
     seller[currency] += price;
 
-    // تحديث
     await updateUser(invoice.buyer_id, buyer);
     await updateUser(invoice.seller_id, seller);
 
@@ -67,6 +63,17 @@ module.exports = {
     await pool.query(
       `UPDATE invoices SET status = 'completed' WHERE id = $1`,
       [id]
+    );
+
+    // ✅ تسجيل اللوج
+    await pool.query(
+      `INSERT INTO logs (user_id, action, details)
+       VALUES ($1, $2, $3)`,
+      [
+        user.id,
+        "confirm",
+        `اشترى ${invoice.item_name} بـ ${invoice.price} ${invoice.currency}`
+      ]
     );
 
     await interaction.reply(`
