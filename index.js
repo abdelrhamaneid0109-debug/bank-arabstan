@@ -63,8 +63,7 @@ client.once("clientReady", async () => {
 
   try {
     // 🧹 مسح الأوامر القديمة (تشغلها مرة واحدة بس)
-    await client.application.commands.set([]);
-
+await client.application.commands.set([]);
     // ✅ تسجيل أوامر السيرفر
     await client.guilds.cache.get(GUILD_ID).commands.set(commands);
 
