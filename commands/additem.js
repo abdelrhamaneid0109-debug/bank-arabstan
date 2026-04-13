@@ -63,12 +63,15 @@ module.exports = {
     const price = interaction.options.getInteger("price");
     const currency = interaction.options.getString("currency");
 
-    // 💾 تخزين المنتج
-    await pool.query(
-      `INSERT INTO products (name, price, currency, category)
-       VALUES ($1, $2, $3, $4)`,
-      [name, price, currency, category]
+    // 💾 تخزين المنتج + التاجر
+    const result = await pool.query(
+      `INSERT INTO products (name, price, currency, category, seller_id)
+       VALUES ($1, $2, $3, $4, $5)
+       RETURNING id`,
+      [name, price, currency, category, interaction.user.id]
     );
+
+    const productId = result.rows[0].id;
 
     // 🛒 عرض المنتج
     await interaction.reply(`
@@ -78,8 +81,10 @@ module.exports = {
 💰 ${price} ${currency}
 🏪 ${category}
 
+🆔 ID: ${productId}
+
 🧾 للشراء:
-/invoice user:@التاجر item:${name} price:${price} currency:${currency}
+/buy product_id:${productId}
 `);
   },
 };
