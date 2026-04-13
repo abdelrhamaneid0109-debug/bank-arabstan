@@ -10,7 +10,10 @@ module.exports = {
     .setName("buy")
     .setDescription("شراء منتج")
     .addIntegerOption(option =>
-      option.setName("product_id").setDescription("ID المنتج").setRequired(true)
+      option
+        .setName("product_id")
+        .setDescription("ID المنتج")
+        .setRequired(true)
     ),
 
   async execute(interaction) {
@@ -32,6 +35,7 @@ module.exports = {
       });
     }
 
+    // ❌ يمنع الشراء من نفسك
     if (product.seller_id === buyer.id) {
       return interaction.reply({
         content: "❌ مينفعش تشتري من نفسك",
@@ -55,16 +59,20 @@ module.exports = {
 
     const invoiceId = invoiceRes.rows[0].id;
 
+    // 📢 رد
     await interaction.reply(`
-🧾 فاتورة شراء
+🧾 **فاتورة شراء**
 
 📦 المنتج: ${product.name}
 💰 السعر: ${product.price} ${product.currency}
 
 🆔 رقم الفاتورة: ${invoiceId}
 
-✔️ /confirm id:${invoiceId}
-❌ /cancel id:${invoiceId}
+✔️ للتأكيد:
+/confirm id:${invoiceId}
+
+❌ للإلغاء:
+/cancel id:${invoiceId}
 `);
   },
 };
