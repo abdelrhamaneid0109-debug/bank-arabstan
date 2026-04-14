@@ -8,7 +8,7 @@ const pool = new Pool({
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("confirm")
+    .setName("تاكيد_الشراء")
     .setDescription("تأكيد عملية الشراء")
     .addIntegerOption(option =>
       option.setName("id").setDescription("رقم الفاتورة").setRequired(true)
