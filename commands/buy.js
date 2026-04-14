@@ -7,7 +7,7 @@ const pool = new Pool({
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("buy")
+    .setName("شراء")
     .setDescription("شراء منتج")
     .addIntegerOption(option =>
       option
