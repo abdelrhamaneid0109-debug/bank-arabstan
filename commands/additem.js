@@ -17,7 +17,7 @@ const shopChannels = {
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("additem")
+    .setName("اضافة_منتج")
     .setDescription("إضافة منتج")
     .addStringOption(option =>
       option.setName("name").setDescription("اسم المنتج").setRequired(true)
