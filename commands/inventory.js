@@ -7,7 +7,7 @@ const pool = new Pool({
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("inventory")
+    .setName("شنطتي")
     .setDescription("عرض الشنطة"),
 
   async execute(interaction) {
