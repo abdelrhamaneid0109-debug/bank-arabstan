@@ -147,7 +147,7 @@ module.exports = {
           { name: "🏪 التصنيف", value: `**${categoryNames[category]}**` },
           { name: "🆔 ID", value: `\`${productId}\`` }
         )
-        .setFooter({ text: "استخدم /buy للشراء" })
+        .setFooter({ text: "استخدم /شراء للشراء" })
         .setTimestamp();
 
       // 🖼️ إضافة الصورة لو موجودة
