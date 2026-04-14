@@ -39,7 +39,7 @@ module.exports = {
   async execute(interaction) {
 
     // 🔐 تحقق من التاجر
-    const allowedRoles = ["1491565646687895563", "1491565491070963733", "1491565646687895563"];
+    const allowedRoles = ["1491578362743750776", "1491565491070963733", "1491565646687895563"];
 
     const hasRole = interaction.member.roles.cache.some(role =>
       allowedRoles.includes(role.id)
