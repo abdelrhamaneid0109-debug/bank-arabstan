@@ -7,7 +7,7 @@ const pool = new Pool({
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("invoice")
+    .setName("فاتورة")
     .setDescription("إنشاء فاتورة بيع")
     .addUserOption(option =>
       option.setName("user").setDescription("المشتري").setRequired(true)
