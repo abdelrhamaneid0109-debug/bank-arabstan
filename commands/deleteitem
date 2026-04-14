@@ -7,7 +7,7 @@ const pool = new Pool({
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("deleteitem")
+    .setName("حذف_منتج")
     .setDescription("حذف منتج")
     .addIntegerOption(o =>
       o.setName("id").setDescription("ID المنتج").setRequired(true)
